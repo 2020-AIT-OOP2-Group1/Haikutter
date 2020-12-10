@@ -90,9 +90,13 @@ def haiku_post_favorite():
     # リスト型に変換
     haiku_list = list(haiku_data)
 
+    # フラグ
+    flag = False
+
     # 認証
     for i in range(len(haiku_list)):
         if haiku_list[i] == check:
+            flag = True
             # いいねを加算
             favorite_num = int(check.get('favorite')) + 1
             # 元データを削除
@@ -103,7 +107,7 @@ def haiku_post_favorite():
                 "date": date,
                 "text": text,
                 "name": name,
-                "favorite": favorite_num   # 変更
+                "favorite": favorite_num  # 変更
             }
             # 新しいデータを追加
             haiku_list.append(add_favorite)
@@ -112,6 +116,11 @@ def haiku_post_favorite():
                 json.dump(haiku_list, f, indent=3)
         else:
             continue
+
+    if not flag:
+        return jsonify({
+            "message": "Error"
+        })
 
     return jsonify({
         "message": "Success"
