@@ -5,7 +5,7 @@ import random
 import string
 
 app = Flask(__name__)
-app.config["JSON_AS_ASCII"] = False
+# app.config["JSON_AS_ASCII"] = False
 
 
 # ３２文字のランダムな文字列生成
@@ -25,13 +25,13 @@ def haiku_get():
 
 @app.route('/haiku', methods=["POST"])
 def haiku_post():
-    text = request.form.get('text', None)
-    name = request.form.get('name', None)
-    favorite = request.form.get('favorite', None)
+    text = request.json.get('text', None)
+    name = request.json.get('name', None)
+    favorite = 0
 
     # date
     dt = datetime.datetime.now()
-    now = "{0:%Y-%m-%d-%H:%M}".format(dt)
+    now = "{0:%Y-%m-%d-%H:%M:%S}".format(dt)
 
     # id
     id = rand_str(32)
@@ -45,7 +45,7 @@ def haiku_post():
     }
 
     # 値が入ってなかった場合の処理
-    if not id or not now or not text or not name or not favorite:
+    if not id or not now or not text or not name or not favorite==0:
         return jsonify({
             "message": "Error"
         })
@@ -59,7 +59,7 @@ def haiku_post():
     json_list.append(dic)
     # 追加されたlistを書き込み
     with open('haiku.json', 'w') as f:
-        json.dump(json_list, f, indent=3)
+        json.dump(json_list, f, indent=4, ensure_ascii=False)
 
     return jsonify({
         "message": "Success"
@@ -68,11 +68,11 @@ def haiku_post():
 
 @app.route('/haiku/favorite', methods=["POST"])
 def haiku_post_favorite():
-    id = request.form.get('id', None)
-    date = request.form.get('date', None)
-    text = request.form.get('text', None)
-    name = request.form.get('name', None)
-    favorite = request.form.get('favorite', None)
+    id = request.json.get('id', None)
+    date = request.json.get('date', None)
+    text = request.json.get('text', None)
+    name = request.json.get('name', None)
+    favorite = request.json.get('favorite', None)
 
     # 認証用
     check = {
@@ -90,28 +90,38 @@ def haiku_post_favorite():
     # リスト型に変換
     haiku_list = list(haiku_data)
 
+    # フラグ
+    flag = False
+
     # 認証
     for i in range(len(haiku_list)):
-        if haiku_list[i] == check:
+        print(haiku_list[i],check)
+        if haiku_list[i].get("id") == check["id"] and haiku_list[i].get("date") == check["date"]:
+            flag = True
             # いいねを加算
-            favorite_num = int(check.get('favorite')) + 1
+            favorite_num = int(haiku_list[i].get('favorite')) + 1
             # 元データを削除
-            haiku_list.remove(check)
+            haiku_list.remove(haiku_list[i])
             # 新しいデータを定義
             add_favorite = {
                 "id": id,
                 "date": date,
                 "text": text,
                 "name": name,
-                "favorite": favorite_num   # 変更
+                "favorite": favorite_num  # 変更
             }
             # 新しいデータを追加
             haiku_list.append(add_favorite)
             # ファイル書き込み
             with open('haiku.json', 'w') as f:
-                json.dump(haiku_list, f, indent=3)
+                json.dump(haiku_list, f, indent=4, ensure_ascii=False)
         else:
             continue
+
+    if not flag:
+        return jsonify({
+            "message": "Error"
+        })
 
     return jsonify({
         "message": "Success"
