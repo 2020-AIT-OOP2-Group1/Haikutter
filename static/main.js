@@ -1,5 +1,5 @@
 
-document.getElementById("send").addEventListener('submit', (e) => {
+document.getElementById("send").addEventListener('click', (e) => {
   // ボタンイベントのキャンセル
   e.preventDefault()
   const obj = {text: document.getElementById("text").value, name: document.getElementById("name").value};
