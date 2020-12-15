@@ -18,9 +18,15 @@
         <div class="form-group">
             <label for="exampleFormControlTextarea1">俳句を入力するんだ！</label>
             <textarea class="form-control" id="text" rows="3"></textarea>
-            <input type="text" id="name">
+            <form id="fav">
+                <div class="form-row align-items-center">
+                    <div class="col-auto"><button id="favorite" class="btn btn-primary">いいね</button></div>
+                </div>
+            </form>
+            <input name="textBox" type="text" id="name">
             <button type="submit" class="btn btn-primary mb-2" id=send>送信する</button>
           </div>
     </form>
+    
 </body>
 </html>
