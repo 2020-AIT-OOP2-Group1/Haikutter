@@ -56,7 +56,7 @@ def haiku_post():
     # list変換
     json_list = list(haiku_data)
     # 入力されたデータを追加
-    json_list.append(dic)
+    json_list.insert(0,dic)
     # 追加されたlistを書き込み
     with open('haiku.json', 'w') as f:
         json.dump(json_list, f, indent=4, ensure_ascii=False)
