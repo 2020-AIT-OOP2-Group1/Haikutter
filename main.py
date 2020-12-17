@@ -120,6 +120,11 @@ def haiku_post_favorite():
 def index():
     return render_template("main.html")
 
+# http://127.0.0.1:5000/login
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
 
 if __name__ == "__main__":
     app.run()
