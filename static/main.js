@@ -2,7 +2,7 @@ display();
 
 document.getElementById("send").addEventListener('click', (e) => {
     // ボタンイベントのキャンセル
-    e.preventDefault()
+    e.preventDefault();
     const obj = {text: document.getElementById("text").value, name: document.getElementById("name").value};
     const method = "post";
     const body = JSON.stringify(obj);
@@ -13,10 +13,8 @@ document.getElementById("send").addEventListener('click', (e) => {
     fetch("./haiku", {method, headers, body}).then((res)=> res.json()).then(()=>{display();}).catch(console.error);
 });
 
-document.getElementById("favorite").addEventListener("click", (e) => {
-    // ボタンイベントのキャンセル
-    e.preventDefault()
-    const obj = { "id": "fs7UBJYcxOCSN5oSa6zI6MwxUoOknyAB", "date": "2020-12-15-11:11:04", "text": "aaaaaaaaaaaa\n", "name": "aaaaaaa", "favorite": 0 };
+function favorite(val){
+    const obj = { "id": val};
     const method = "post";
     const body = JSON.stringify(obj);
     const headers = {
@@ -24,7 +22,7 @@ document.getElementById("favorite").addEventListener("click", (e) => {
     'Content-Type': 'application/json'
     };
     fetch("./haiku/favorite", {method, headers, body}).then((res)=> res.json()).then(()=>{display();}).catch(console.error);
-})
+}
 
 function display(){
     fetch("./haiku")
@@ -36,9 +34,20 @@ function display(){
             `
                 <div class="card shadow-sm mb-3">
                     <div class="card-body">
-                        <p class="fs-2 lh-1 text-center">${val['text']}</p>
-                        <p class="fs-5 lh-1 text-end">${val['name']}</p>
-                        <p class="fs-7 lh-1 text-muted text-end">${val['date']}</p>
+                        <p class="fs-2 lh-1 text-center mt-3">${val['text']}</p>
+                        <div class="text-end">
+                            <div class="row align-items-center d-flex justify-content-between">
+                                <div class="col-auto align-self-end">
+                                    <button type="button" class="btn btn-secondary mb-3 favorite" onclick="favorite('${val['id']}')">
+                                        <i class="far fa-heart"> ${val['favorite']}</i>
+                                    </button>
+                                </div>
+                                <div class="col-auto"> 
+                                    <p class="fs-5 lh-1">${val['name']}</p>
+                                    <p class="fs-7 lh-1 text-muted">${val['date']}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `
