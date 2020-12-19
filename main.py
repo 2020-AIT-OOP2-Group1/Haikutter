@@ -83,7 +83,7 @@ def haiku_post():
         else:
             continue
     # 入力されたデータを追加
-    json_list.append(dic)
+    json_list.insert(0,dic)
     # 追加されたlistを書き込み
     with open('haiku.json', 'w') as f:
         json.dump(json_list, f, indent=4, ensure_ascii=False)
@@ -97,19 +97,6 @@ def haiku_post():
 def haiku_post_favorite():
     print('/haiku/favorite(POST)')
     id = request.json.get('id', None)
-    date = request.json.get('date', None)
-    text = request.json.get('text', None)
-    name = request.json.get('name', None)
-    favorite = request.json.get('favorite', None)
-    print('haiku_post_favorite')
-    # 認証用
-    check = {
-        "id": id,
-        "date": date,
-        "text": text,
-        "name": name,
-        "favorite": favorite
-    }
 
     # JSON読み込み
     with open('haiku.json') as f:
@@ -123,23 +110,23 @@ def haiku_post_favorite():
 
     # 認証
     for i in range(len(haiku_list)):
-        print(haiku_list[i], check)
-        if haiku_list[i].get('id') == check["id"] and haiku_list[i].get("date") == check["date"]:
+        if haiku_list[i].get("id") == id:
             flag = True
             # いいねを加算
             favorite_num = int(haiku_list[i].get('favorite')) + 1
+            tmp_list = haiku_list[i];
             # 元データを削除
             haiku_list.remove(haiku_list[i])
             # 新しいデータを定義
             add_favorite = {
-                "id": id,
-                "date": date,
-                "text": text,
-                "name": name,
+                "id": tmp_list.get("id"),
+                "date": tmp_list.get("date"),
+                "text": tmp_list.get("text"),
+                "name": tmp_list.get("name"),
                 "favorite": favorite_num  # 変更
             }
             # 新しいデータを追加
-            haiku_list.append(add_favorite)
+            haiku_list.insert(i,add_favorite)
             # ファイル書き込み
             with open('haiku.json', 'w') as f:
                 json.dump(haiku_list, f, indent=4, ensure_ascii=False)
@@ -294,6 +281,11 @@ def account_info(user_id):
 @app.route('/')
 def index():
     return render_template("main.html")
+
+# http://127.0.0.1:5000/login
+@app.route('/login')
+def login():
+    return render_template("login.html")
 
 
 if __name__ == "__main__":
