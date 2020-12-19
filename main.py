@@ -1,8 +1,10 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, make_response, abort
 import json
 import datetime
 import random
 import string
+import uuid
+from werkzeug.utils import redirect
 
 app = Flask(__name__)
 # app.config["JSON_AS_ASCII"] = False
@@ -46,9 +48,7 @@ def haiku_post():
 
     # 値が入ってなかった場合の処理
     if not id or not now or not text or not name or not favorite==0:
-        return jsonify({
-            "message": "Error"
-        })
+        return jsonify({"message": "Error"})
 
     # JSON読み込み
     with open('haiku.json') as f:
@@ -61,13 +61,11 @@ def haiku_post():
     with open('haiku.json', 'w') as f:
         json.dump(json_list, f, indent=4, ensure_ascii=False)
 
-    return jsonify({
-        "message": "Success"
-    })
+    return jsonify({"message": "Success"})
 
 
 @app.route('/haiku/favorite', methods=["POST"])
-def haiku_post_favorite():
+def haiku_favorite():
     id = request.json.get('id', None)
 
     # JSON読み込み
@@ -77,16 +75,12 @@ def haiku_post_favorite():
     # リスト型に変換
     haiku_list = list(haiku_data)
 
-    # フラグ
-    flag = False
-
     # 認証
     for i in range(len(haiku_list)):
         if haiku_list[i].get("id") == id:
-            flag = True
             # いいねを加算
             favorite_num = int(haiku_list[i].get('favorite')) + 1
-            tmp_list = haiku_list[i];
+            tmp_list = haiku_list[i]
             # 元データを削除
             haiku_list.remove(haiku_list[i])
             # 新しいデータを定義
@@ -102,25 +96,17 @@ def haiku_post_favorite():
             # ファイル書き込み
             with open('haiku.json', 'w') as f:
                 json.dump(haiku_list, f, indent=4, ensure_ascii=False)
+            
+            return jsonify({"message": "Success"})
         else:
             continue
 
-    if not flag:
-        return jsonify({
-            "message": "Error"
-        })
-
-    return jsonify({
-        "message": "Success"
-    })
+    return jsonify({"message": "Error"})
 
 
-<<<<<<< Updated upstream
-=======
 # アカウント認証
 @app.route('/user/login', methods=["POST"])
 def user_login():
-    print('/user/login(POST')
     user_id = request.json.get('user_id', None)
     ps = request.json.get('password', None)
 
@@ -134,52 +120,55 @@ def user_login():
     for i in range(len(user_list)):
         if user_list[i].get('user_id') == user_id and user_list[i].get('password') == ps:
             response = make_response(render_template('main.html'))
-            print('test')
-            dic = {'session_id': session_id,
-                   'user_id': user_id
-                   }
             # JSON読み込み
             with open('session.json') as f:
                 session_data = json.load(f)
 
             session_list = list(session_data)
             # 追加
-            session_list.append(dic)
-            with open('session.json', 'w') as f:
-                json.dump(dic, f, indent=4, ensure_ascii=False)
+            flag = False
+            for i in range(len(session_list)):
+                if session_list[i].get('user_id') == user_id:
+                    session_list[i]['session_id'] = session_id
+                    flag = True
+            
+            if not flag:
+                dic = {'session_id': session_id, 'user_id': user_id}
+                session_list.append(dic)
 
-            return response.set_cookie('cookie_name', value=json.dumps(dic))
+            with open('session.json', 'w') as f:
+                json.dump(session_list, f, indent=4, ensure_ascii=False)
+
+            response.set_cookie('session_id', value=session_id)
+            return response
 
     return jsonify({"message": "Error"})
 
 
 # セッション認証
-@app.route('/session', methods=["POST"])
-def session_main():
-    print('session(POST)')
+@app.route('/user/session', methods=["POST"])
+def session():
     cget = request.cookies.get('session_id', None)
     print(cget)
 
     # JSON読み込み
     with open('session.json') as f:
         session_data = json.load(f)
+
     session_list = list(session_data)
 
     for i in range(len(session_list)):
         if session_list[i].get('session_id') == cget:
             # 成功なら成功を返す
-            return jsonify({
-                "message": "Success"
-            })
+            return jsonify({"message": "Success"})
+
     # それ以外ならログインページをリダイレクト
-    return redirect('login.html')
+    return redirect('/login')
 
 
 # アカウント情報の取得
 @app.route('/user/<user_id>', methods=["POST", "GET"])
 def account_info(user_id):
-    print('/user/' + user_id)
-
     # JSON読み込み
     with open('user.json') as f:
         user_data = json.load(f)
@@ -191,10 +180,9 @@ def account_info(user_id):
             flag = True
     # user_idが存在しなかった場合
     if not flag:
-        abort(404, description="Not Found")
+        abort(404, description="Page Not Found")
 
     if request.method == 'POST':
-
         # JSON読み込み
         with open('user.json') as f:
             user_data = json.load(f)
@@ -229,7 +217,6 @@ def account_info(user_id):
         return render_template('user.html')
 
 
->>>>>>> Stashed changes
 # http://127.0.0.1:5000/
 @app.route('/')
 def index():
