@@ -115,6 +115,121 @@ def haiku_post_favorite():
     })
 
 
+<<<<<<< Updated upstream
+=======
+# アカウント認証
+@app.route('/user/login', methods=["POST"])
+def user_login():
+    print('/user/login(POST')
+    user_id = request.json.get('user_id', None)
+    ps = request.json.get('password', None)
+
+    # JSON読み込み
+    with open('user.json') as f:
+        user_data = json.load(f)
+
+    user_list = list(user_data)
+    session_id = str(uuid.uuid4())
+
+    for i in range(len(user_list)):
+        if user_list[i].get('user_id') == user_id and user_list[i].get('password') == ps:
+            response = make_response(render_template('main.html'))
+            print('test')
+            dic = {'session_id': session_id,
+                   'user_id': user_id
+                   }
+            # JSON読み込み
+            with open('session.json') as f:
+                session_data = json.load(f)
+
+            session_list = list(session_data)
+            # 追加
+            session_list.append(dic)
+            with open('session.json', 'w') as f:
+                json.dump(dic, f, indent=4, ensure_ascii=False)
+
+            return response.set_cookie('cookie_name', value=json.dumps(dic))
+
+    return jsonify({"message": "Error"})
+
+
+# セッション認証
+@app.route('/session', methods=["POST"])
+def session_main():
+    print('session(POST)')
+    cget = request.cookies.get('session_id', None)
+    print(cget)
+
+    # JSON読み込み
+    with open('session.json') as f:
+        session_data = json.load(f)
+    session_list = list(session_data)
+
+    for i in range(len(session_list)):
+        if session_list[i].get('session_id') == cget:
+            # 成功なら成功を返す
+            return jsonify({
+                "message": "Success"
+            })
+    # それ以外ならログインページをリダイレクト
+    return redirect('login.html')
+
+
+# アカウント情報の取得
+@app.route('/user/<user_id>', methods=["POST", "GET"])
+def account_info(user_id):
+    print('/user/' + user_id)
+
+    # JSON読み込み
+    with open('user.json') as f:
+        user_data = json.load(f)
+    user_list = list(user_data)
+    # user_idが一致するか
+    flag = False
+    for i in range(len(user_list)):
+        if user_id == user_list[i].get('user_id'):
+            flag = True
+    # user_idが存在しなかった場合
+    if not flag:
+        abort(404, description="Not Found")
+
+    if request.method == 'POST':
+
+        # JSON読み込み
+        with open('user.json') as f:
+            user_data = json.load(f)
+        user_list = list(user_data)
+        # JSON読み込み
+        with open('haiku.json') as f:
+            haiku_data = json.load(f)
+        haiku_list = list(haiku_data)
+
+        haiku_id = []
+        # user_idが一致するアカウントの俳句idを取得　→ listにappend
+        for i in range(len(user_list)):
+            if user_id == user_list[i].get('user_id'):
+                haiku_id.append(user_list[i].get('id'))
+
+        haiku_text = []
+        # haiku_idとhaiku_listの俳句idが一致したら俳句をlistにappend
+        try:
+            for i in range(len(haiku_list)):
+                for j in range(len(haiku_list)):
+                    if haiku_id[i] == haiku_list[j].get('id'):
+                        haiku_text.append(haiku_list[j])
+        except IndexError:
+            pass
+
+        return jsonify({
+            "user_id": user_id,
+            "haiku": haiku_text
+        })
+
+    if request.method == 'GET':
+        return render_template('user.html')
+
+
+>>>>>>> Stashed changes
 # http://127.0.0.1:5000/
 @app.route('/')
 def index():
