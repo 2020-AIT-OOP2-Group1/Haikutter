@@ -3,21 +3,21 @@
         "id": "1GrGkRzcd5AujF7ipB9eZAm9TZCb984r",
         "date": "2020-12-17-17:33:34",
         "text": "閑さや　岩にしみ　入蝉の声",
-        "name": "松尾芭蕉",
-        "favorite": 93
+        "user_id": "admin2",
+        "favorite": 95
     },
     {
         "id": "SX9z0XUwr3YxzW20jOavnFD9PcGnLVfS",
         "date": "2020-12-17-17:18:05",
         "text": "柿くへば　鐘が鳴るなり　法隆寺",
-        "name": "正岡子規",
+        "user_id": "admin1",
         "favorite": 92
     },
     {
         "id": "bpTcBc57dSLLxC6zUFIew3gThDuEJK6m",
         "date": "2020-12-17-12:11:13",
         "text": "古池や　蛙飛びこむ　水の音",
-        "name": "松尾芭蕉",
-        "favorite": 89
+        "user_id": "admin",
+        "favorite": 92
     }
 ]
