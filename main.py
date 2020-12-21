@@ -219,25 +219,14 @@ def account_info(user_id):
             haiku_data = json.load(f)
         haiku_list = list(haiku_data)
 
-        haiku_id = []
-        # user_idが一致するアカウントの俳句idを取得　→ listにappend
-        for i in range(len(user_list)):
-            if user_id == user_list[i].get('user_id'):
-                haiku_id.append(user_list[i].get('id'))
-
-        haiku_text = []
-        # haiku_idとhaiku_listの俳句idが一致したら俳句をlistにappend
-        try:
-            for i in range(len(haiku_list)):
-                for j in range(len(haiku_list)):
-                    if haiku_id[i] == haiku_list[j].get('id'):
-                        haiku_text.append(haiku_list[j])
-        except IndexError:
-            pass
+        haiku = []
+        for i in range(len(haiku_list)):
+            if user_id == haiku_list[i].get('user_id'):
+                haiku.append(haiku_list[i])
 
         return jsonify({
             "user_id": user_id,
-            "haiku": haiku_text
+            "haiku": haiku
         })
 
     if request.method == 'GET':
