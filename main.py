@@ -7,6 +7,8 @@ import uuid
 from werkzeug.utils import redirect
 
 app = Flask(__name__)
+
+
 # app.config["JSON_AS_ASCII"] = False
 
 
@@ -18,17 +20,42 @@ def rand_str(n):
 
 # http://127.0.0.1:5000/haiku
 @app.route('/haiku', methods=["GET"])
-def haiku_get():
+def haiku_get():  # 変更箇所 ServerSide_ver3
     with open('haiku.json') as f:
-        json_data = json.load(f)
+        haiku_data = json.load(f)
+    haiku_list = list(haiku_data)
+    with open('user.json') as f:
+        user_data = json.load(f)
+    user_list = list(user_data)
 
-    return jsonify(json_data)
+    data_list = []
+
+    for i in range(len(haiku_list)):
+        for j in range(len(user_list)):
+            if haiku_list[i].get('user_id') == user_list[j].get('user_id'):
+                # print(haiku_list[i].get('user_id')+"="+user_list[j].get('user_id'))
+                # print(user_list[j].get('name'))
+                dic = {
+                    "date": haiku_list[i].get('date'),
+                    "favorite": haiku_list[i].get('favorite'),
+                    "id": haiku_list[i].get('id'),
+                    "user": {
+                        "id": user_list[j].get('user_id'),
+                        "name": user_list[j].get('name'),
+                        "image": user_list[j].get('image')
+                    },
+                    "text": haiku_list[i].get('text'),
+                }
+                # print(dic)
+                data_list.insert(0, dic)
+
+    return jsonify(data_list)
 
 
 @app.route('/haiku', methods=["POST"])
 def haiku_post():
     text = request.json.get('text', None)
-    name = request.json.get('name', None)
+    user_id = request.json.get('user_id', None)  # 変更箇所 ServerSide_ver3
     favorite = 0
 
     # date
@@ -42,12 +69,12 @@ def haiku_post():
         "id": id,
         "date": now,
         "text": text,
-        "name": name,
+        "user_id": user_id,  # 変更箇所 ServerSide_ver3
         "favorite": favorite
     }
 
     # 値が入ってなかった場合の処理
-    if not id or not now or not text or not name or not favorite==0:
+    if not id or not now or not text or not user_id or not favorite == 0:
         return jsonify({"message": "Error"})
 
     # JSON読み込み
@@ -56,7 +83,7 @@ def haiku_post():
     # list変換
     json_list = list(haiku_data)
     # 入力されたデータを追加
-    json_list.insert(0,dic)
+    json_list.insert(0, dic)
     # 追加されたlistを書き込み
     with open('haiku.json', 'w') as f:
         json.dump(json_list, f, indent=4, ensure_ascii=False)
@@ -88,15 +115,15 @@ def haiku_favorite():
                 "id": tmp_list.get("id"),
                 "date": tmp_list.get("date"),
                 "text": tmp_list.get("text"),
-                "name": tmp_list.get("name"),
+                "user_id": tmp_list.get("user_id"),  # 変更箇所 ServerSide_ver3
                 "favorite": favorite_num  # 変更
             }
             # 新しいデータを追加
-            haiku_list.insert(i,add_favorite)
+            haiku_list.insert(i, add_favorite)
             # ファイル書き込み
             with open('haiku.json', 'w') as f:
                 json.dump(haiku_list, f, indent=4, ensure_ascii=False)
-            
+
             return jsonify({"message": "Success"})
         else:
             continue
@@ -131,7 +158,7 @@ def user_login():
                 if session_list[i].get('user_id') == user_id:
                     session_list[i]['session_id'] = session_id
                     flag = True
-            
+
             if not flag:
                 dic = {'session_id': session_id, 'user_id': user_id}
                 session_list.append(dic)
@@ -192,25 +219,14 @@ def account_info(user_id):
             haiku_data = json.load(f)
         haiku_list = list(haiku_data)
 
-        haiku_id = []
-        # user_idが一致するアカウントの俳句idを取得　→ listにappend
-        for i in range(len(user_list)):
-            if user_id == user_list[i].get('user_id'):
-                haiku_id.append(user_list[i].get('id'))
-
-        haiku_text = []
-        # haiku_idとhaiku_listの俳句idが一致したら俳句をlistにappend
-        try:
-            for i in range(len(haiku_list)):
-                for j in range(len(haiku_list)):
-                    if haiku_id[i] == haiku_list[j].get('id'):
-                        haiku_text.append(haiku_list[j])
-        except IndexError:
-            pass
+        haiku = []
+        for i in range(len(haiku_list)):
+            if user_id == haiku_list[i].get('user_id'):
+                haiku.append(haiku_list[i])
 
         return jsonify({
             "user_id": user_id,
-            "haiku": haiku_text
+            "haiku": haiku
         })
 
     if request.method == 'GET':
@@ -221,6 +237,7 @@ def account_info(user_id):
 @app.route('/')
 def index():
     return render_template("main.html")
+
 
 # http://127.0.0.1:5000/login
 @app.route('/login')
