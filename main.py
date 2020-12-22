@@ -18,6 +18,59 @@ def rand_str(n):
     return ''.join(randstr)
 
 
+# session_idからuser_id
+def user_idGET(id):
+    dt = datetime.datetime.now()
+
+    with open('session.json') as f:
+        session_data = json.load(f)
+    session_list = list(session_data)
+
+    tmp_list = session_list
+    for i in range(len(tmp_list)):
+        # print(tmp_list[i])
+        tstr = tmp_list[i].get('life_time')
+        tdatetime = dt.strptime(tstr, '%Y-%m-%d %H:%M:%S')
+        # 差分を計算
+        sub = dt - tdatetime
+        # 60分以上経過しているものを削除
+        if sub.seconds > 3600:
+            session_list.remove(tmp_list[i])
+    with open('session.json', 'w') as f:
+        json.dump(session_list, f, indent=4, ensure_ascii=False)
+
+    for i in range(len(session_list)):
+        if id == session_list[i].get('session_id'):
+            return session_list[i].get('user_id')
+    return None
+
+
+# user_idからsession_id
+def session_idGET(id):
+    dt = datetime.datetime.now()
+
+    with open('session.json') as f:
+        session_data = json.load(f)
+    session_list = list(session_data)
+
+    tmp_list = session_list
+    for i in range(len(tmp_list)):
+        tstr = tmp_list[i].get('life_time')
+        tdatetime = dt.strptime(tstr, '%Y-%m-%d %H:%M:%S')
+        # 差分を計算
+        sub = dt - tdatetime
+        # 60分以上経過しているものを削除
+        if sub.seconds > 3600:
+            session_list.remove(tmp_list[i])
+    with open('session.json', 'w') as f:
+        json.dump(session_list, f, indent=4, ensure_ascii=False)
+
+    for i in range(len(session_list)):
+        if id == session_list[i].get('user_id'):
+            return session_list[i].get('session_id')
+    return None
+
+
 # http://127.0.0.1:5000/haiku
 @app.route('/haiku', methods=["GET"])
 def haiku_get():  # 変更箇所 ServerSide_ver3
@@ -55,12 +108,17 @@ def haiku_get():  # 変更箇所 ServerSide_ver3
 @app.route('/haiku', methods=["POST"])
 def haiku_post():
     text = request.json.get('text', None)
-    user_id = request.json.get('user_id', None)  # 変更箇所 ServerSide_ver3
+    cget = request.cookie.get('session_id', None)
+    print(cget)
+    user_id = user_idGET(cget)
     favorite = 0
+
+    if user_id is None:
+        return jsonify({"message": "Error"})
 
     # date
     dt = datetime.datetime.now()
-    now = "{0:%Y-%m-%d-%H:%M:%S}".format(dt)
+    now = "{0:%Y-%m-%d %H:%M:%S}".format(dt)
 
     # id
     id = rand_str(32)
@@ -69,7 +127,7 @@ def haiku_post():
         "id": id,
         "date": now,
         "text": text,
-        "user_id": user_id,  # 変更箇所 ServerSide_ver3
+        "user_id": user_id,
         "favorite": favorite
     }
 
@@ -94,6 +152,28 @@ def haiku_post():
 @app.route('/haiku/favorite', methods=["POST"])
 def haiku_favorite():
     id = request.json.get('id', None)
+    cget = request.cookie.get('session_id', None)
+    user_id = user_idGET(cget)
+    print(user_id)
+
+    # 追加した処理　ver4
+    if user_id is None:
+        return jsonify({"message": "Error"})
+    with open('user.json') as f:
+        user_data = json.load(f)
+    user_list = list(user_data)
+    for i in range(len(user_list)):
+        if user_id == user_list[i].get('user_id'):
+            favorite_id = list(user_list[i].get('favorite'))
+            add_list = []
+            print(favorite_id[1])
+            for j in range(len(favorite_id)):
+                add_list.append(favorite_id[j])
+            add_list.append(id)
+            # print(add_list)
+            user_list[i]['favorite'] = add_list
+            with open('user.json', 'w') as f:
+                json.dump(user_list, f, indent=4, ensure_ascii=False)
 
     # JSON読み込み
     with open('haiku.json') as f:
@@ -154,19 +234,24 @@ def user_login():
             session_list = list(session_data)
             # 追加
             flag = False
-            for i in range(len(session_list)):
-                if session_list[i].get('user_id') == user_id:
-                    session_list[i]['session_id'] = session_id
+
+            for j in range(len(session_list)):
+                if session_list[j].get('user_id') == user_id:
+                    session_list[j]['session_id'] = session_id
                     flag = True
 
+            dt = datetime.datetime.now()
+            now = "{0:%Y-%m-%d %H:%M:%S}".format(dt)
+
             if not flag:
-                dic = {'session_id': session_id, 'user_id': user_id}
+                dic = {'session_id': session_id, 'user_id': user_id, 'life_time': now}
                 session_list.append(dic)
 
             with open('session.json', 'w') as f:
                 json.dump(session_list, f, indent=4, ensure_ascii=False)
 
-            response.set_cookie('session_id', value=session_id)
+            response.set_cookie("session_id", value=session_id)
+
             return response
 
     return jsonify({"message": "Error"})
@@ -236,14 +321,24 @@ def account_info(user_id):
 # http://127.0.0.1:5000/
 @app.route('/')
 def index():
+    cget = request.cookies.get('session_id', None)
+    if user_idGET(cget) is None:
+        return redirect('/login')
+
     return render_template("main.html")
 
 
 # http://127.0.0.1:5000/login
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    cget = request.cookies.get('session_id', None)
+    if user_idGET(cget) is None:
+        return render_template("login.html")
+
+    return redirect('/')
 
 
 if __name__ == "__main__":
+    # print(session_idGET("admin"))
+    # print(user_idGET("bc203eee-3396-464e-b400-830e53e92236"))
     app.run()
