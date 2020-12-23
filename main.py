@@ -214,7 +214,7 @@ def account_info(user_id):
         })
 
     if request.method == 'GET':
-        return render_template('user.html')
+        return render_template('user.html', user_id = user_id)
 
 
 # http://127.0.0.1:5000/
@@ -226,6 +226,7 @@ def index():
 @app.route('/login')
 def login():
     return render_template("login.html")
+
 
 
 if __name__ == "__main__":
