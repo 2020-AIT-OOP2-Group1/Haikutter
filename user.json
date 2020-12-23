@@ -4,14 +4,7 @@
         "password": "password",
         "name": "松尾芭蕉",
         "image": "static/image/test.png",
-        "favorite": [
-            "admin",
-            "hoge",
-            "fuga",
-            "fuga2",
-            "hogengo",
-            "ahoho"
-        ]
+        "favorite": []
     },
     {
         "user_id": "admin1",
