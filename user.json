@@ -1,6 +1,23 @@
 [
     {
-        "user_id":"admin",
-        "password":"password"
+        "user_id": "admin",
+        "password": "password",
+        "name": "松尾芭蕉",
+        "image": "static/image/test.png",
+        "favorite": []
+    },
+    {
+        "user_id": "admin1",
+        "password": "password2",
+        "name": "正岡子規",
+        "image": "static/image/test1.png",
+        "favorite": []
+    },
+    {
+        "user_id": "admin2",
+        "password": "password3",
+        "name": "松尾芭蕉",
+        "image": "static/image/test2.png",
+        "favorite": []
     }
 ]
