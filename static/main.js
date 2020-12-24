@@ -10,7 +10,18 @@ document.getElementById("send").addEventListener('click', (e) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     };
-    fetch("./haiku", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
+    fetch("./haiku", { method, headers, body })
+                        .then((res) => res.json())
+                        .then(() => { 
+                            display();
+                            const d1 = document.getElementById("error-alert");
+                            if (res["message"] == "Error") {
+                                d1.style.display = "error";
+                            }
+                            if (res["message"] == "Success") {
+                                window.location.href = "display";
+                            }
+                         }).catch(console.error);
 });
 
 function favorite(val) {
