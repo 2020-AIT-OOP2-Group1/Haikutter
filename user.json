@@ -12,14 +12,14 @@
     },
     {
         "user_id": "admin1",
-        "password": "password2",
+        "password": "password1",
         "name": "正岡子規",
         "image": "static/image/test.jpg",
         "favorite": []
     },
     {
         "user_id": "admin2",
-        "password": "password3",
+        "password": "password2",
         "name": "松尾芭蕉",
         "image": "static/image/test.jpg",
         "favorite": []
