@@ -35,7 +35,7 @@ document.getElementById("logout").addEventListener("click", (e) => {
                 d1.style.display = "block";
             }
             if (res["message"] == "Success") {
-                window.location.href = './';
+                window.location.href = './login';
             }
         })
         .catch(console.error);
