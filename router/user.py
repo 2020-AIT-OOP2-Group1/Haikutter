@@ -5,6 +5,7 @@ import uuid
 
 app = Blueprint('user', __name__)
 
+
 # アカウント認証
 @app.route('/user/login', methods=["POST"])
 def user_login():
@@ -110,17 +111,22 @@ def account_info(user_id):
             if user_id == user_list[i].get('user_id'):
                 user = user_list[i]
 
-        haiku = []
+        haiku = {}
         for i in range(len(haiku_list)):
             if user.get('user_id') == haiku_list[i].get('user_id'):
-                haiku.append(haiku_list[i])
+                haiku = haiku_list[i]
 
         if user == {}:
             return jsonify({"message": "Error"})
 
         return jsonify({
-            "user_id": user['user_id'],
-            "name": user['name'],
-            "image": user['image'],
-            "haiku": haiku
+            "id": haiku['id'],
+            "text": haiku['text'],
+            "date": haiku['date'],
+            "favorite": haiku['favorite'],
+            "user": {
+                "id": user['user_id'],
+                "name": user['name'],
+                "image": user['image']
+            }
         })
