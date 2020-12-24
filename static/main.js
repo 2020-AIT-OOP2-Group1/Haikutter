@@ -11,17 +11,17 @@ document.getElementById("send").addEventListener('click', (e) => {
         'Content-Type': 'application/json'
     };
     fetch("./haiku", { method, headers, body })
-                        .then((res) => res.json())
-                        .then((res) => { 
-                            display();
-                            const d1 = document.getElementById("error-alert");
-                            if (res["message"] == "Error") {
-                                d1.style.display = "block";
+        .then((res) => res.json())
+        .then((res) => {
+            display();
+            const d1 = document.getElementById("error-alert");
+            if (res["message"] == "Error") {
+                d1.style.display = "block";
 
-                            }if (res["message"] == "Success") {
-                                display();
-                            }
-                         }).catch(console.error);
+            } if (res["message"] == "Success") {
+                display();
+            }
+        }).catch(console.error);
 });
 
 function favorite(val) {
