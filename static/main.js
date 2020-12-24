@@ -13,6 +13,34 @@ document.getElementById("send").addEventListener('click', (e) => {
     fetch("./haiku", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
 });
 
+//logout
+document.getElementById("logout").addEventListener("click", (e) => {
+    // ボタンイベントのキャンセル
+    e.preventDefault()
+
+    const obj = {};
+    console.log(obj)
+    const method = "post";
+    const body = JSON.stringify(obj);
+    console.log(body)
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    fetch("./user/logout", { method, headers, body })
+        .then((res) => res.json())
+        .then((res) => {
+            const d1 = document.getElementById("error-alert");
+            if (res["message"] == "Error") {
+                d1.style.display = "block";
+            }
+            if (res["message"] == "Success") {
+                window.location.href = './';
+            }
+        })
+        .catch(console.error);
+});
+
 function favorite(val) {
     const obj = { "id": val };
     const method = "post";
