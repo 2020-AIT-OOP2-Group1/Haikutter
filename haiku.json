@@ -25,7 +25,7 @@
         "date": "2020-12-17 12:11:13",
         "text": "古池や　蛙飛びこむ　水の音",
         "user_id": "admin1",
-        "favorite": 93
+        "favorite": 92
     },
     {
         "id": "qmxf11p588M2OLiuZLgUHf9qh4q8uqYq",
@@ -38,6 +38,13 @@
         "id": "pDrC8DmlSBf4lMaAgGimpPqc7WiBg4mu",
         "date": "2020-12-24 13:53:54",
         "text": "テスト\n",
+        "user_id": "admin",
+        "favorite": 1
+    },
+    {
+        "id": "KMB89Y8tZJ6x8pQDJvusqH5HdvCBqRDO",
+        "date": "2020-12-24 14:59:08",
+        "text": "あああああ",
         "user_id": "admin",
         "favorite": 0
     }
