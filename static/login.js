@@ -7,10 +7,8 @@ document.getElementById("login").addEventListener("click", (e) => {
         "user_id": document.getElementById("user-id").value,
         "password": document.getElementById("password").value
     };
-    console.log(obj)
     const method = "post";
     const body = JSON.stringify(obj);
-    console.log(body)
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
