@@ -5,10 +5,12 @@ from module.function import getUserId
 from router import haiku, user
 
 app = Flask(__name__)
+# app.config["JSON_AS_ASCII"] = False
 
 # 分割先のコントローラー(Blueprint)を登録する
 app.register_blueprint(haiku.app)
 app.register_blueprint(user.app)
+
 
 # app.config["JSON_AS_ASCII"] = False
 
