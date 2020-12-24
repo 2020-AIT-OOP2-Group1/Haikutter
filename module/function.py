@@ -7,8 +7,6 @@ import copy
 LIMIT_TIME = 3600
 
 # ３２文字のランダムな文字列生成
-
-
 def rand_str(n):
     randstr = [random.choice(string.ascii_letters + string.digits)
                for i in range(n)]

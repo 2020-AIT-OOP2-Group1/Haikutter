@@ -2,6 +2,7 @@ from flask import request, render_template, jsonify, make_response, abort, Bluep
 from datetime import datetime
 import json
 import uuid
+
 app = Blueprint('user', __name__)
 
 # アカウント認証
