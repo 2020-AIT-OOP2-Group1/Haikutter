@@ -1,7 +1,11 @@
 from flask import Flask, request, render_template, jsonify, make_response, abort
 from werkzeug.utils import redirect
 from datetime import datetime
-import json, random, string, uuid, copy
+import json
+import random
+import string
+import uuid
+import copy
 
 app = Flask(__name__)
 # app.config["JSON_AS_ASCII"] = False
@@ -9,8 +13,11 @@ app = Flask(__name__)
 LIMIT_TIME = 3600
 
 # ３２文字のランダムな文字列生成
+
+
 def rand_str(n):
-    randstr = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+    randstr = [random.choice(string.ascii_letters + string.digits)
+               for i in range(n)]
     return ''.join(randstr)
 
 
@@ -24,7 +31,8 @@ def getUserId(id):
     now_time = datetime.now()
 
     for i in range(len(tmp_list)):
-        life_time = datetime.strptime(tmp_list[i]['life_time'], '%Y-%m-%d %H:%M:%S')
+        life_time = datetime.strptime(
+            tmp_list[i]['life_time'], '%Y-%m-%d %H:%M:%S')
         # 差分を計算
         sub = now_time - life_time
         # LIMIT_TIME以上経過しているものを削除
@@ -51,7 +59,8 @@ def getSessionId(id):
     now_time = datetime.now()
 
     for i in range(len(tmp_list)):
-        life_time = datetime.strptime(tmp_list[i]['life_time'], '%Y-%m-%d %H:%M:%S')
+        life_time = datetime.strptime(
+            tmp_list[i]['life_time'], '%Y-%m-%d %H:%M:%S')
         # 差分を計算
         sub = now_time - life_time
         # LIMIT_TIME分以上経過しているものを削除
@@ -74,7 +83,7 @@ def haiku_get():  # 変更箇所 ServerSide_ver3
     with open('haiku.json') as f:
         haiku_data = json.load(f)
     haiku_list = list(haiku_data)
-    
+
     with open('user.json') as f:
         user_data = json.load(f)
     user_list = list(user_data)
@@ -205,7 +214,6 @@ def user_login():
 
     for i in range(len(user_list)):
         if user_list[i].get('user_id') == user_id and user_list[i].get('password') == ps:
-            response = make_response(render_template('main.html'))
             # JSON読み込み
             with open('session.json') as f:
                 session_data = json.load(f)
@@ -220,14 +228,15 @@ def user_login():
                     flag = True
 
             if not flag:
-                dic = {'session_id': session_id, 'user_id': user_id, 'life_time': now}
+                dic = {'session_id': session_id,
+                       'user_id': user_id, 'life_time': now}
                 session_list.append(dic)
 
             with open('session.json', 'w') as f:
                 json.dump(session_list, f, indent=4, ensure_ascii=False)
 
+            response = make_response(jsonify({"message": "Success"}))
             response.set_cookie("session_id", value=session_id)
-
             return response
 
     return jsonify({"message": "Error"})

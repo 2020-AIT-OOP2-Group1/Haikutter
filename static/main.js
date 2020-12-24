@@ -3,35 +3,35 @@ display();
 document.getElementById("send").addEventListener('click', (e) => {
     // ボタンイベントのキャンセル
     e.preventDefault();
-    const obj = {text: document.getElementById("text").value, name: document.getElementById("name").value};
+    const obj = { text: document.getElementById("text").value, name: document.getElementById("name").value };
     const method = "post";
     const body = JSON.stringify(obj);
     const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     };
-    fetch("./haiku", {method, headers, body}).then((res)=> res.json()).then(()=>{display();}).catch(console.error);
+    fetch("./haiku", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
 });
 
-function favorite(val){
-    const obj = { "id": val};
+function favorite(val) {
+    const obj = { "id": val };
     const method = "post";
     const body = JSON.stringify(obj);
     const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     };
-    fetch("./haiku/favorite", {method, headers, body}).then((res)=> res.json()).then(()=>{display();}).catch(console.error);
+    fetch("./haiku/favorite", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
 }
 
-function display(){
+function display() {
     fetch("./haiku")
-    .then((res)=> res.json())
-    .then((res)=>{
-        document.getElementById("haiku-body").innerHTML = "";
-        res.forEach((val)=>{
-            const haikuCard = 
-            `
+        .then((res) => res.json())
+        .then((res) => {
+            document.getElementById("haiku-body").innerHTML = "";
+            res.forEach((val) => {
+                const haikuCard =
+                    `
                 <div class="card shadow-sm mb-3">
                     <div class="card-body">
                         <p class="fs-2 lh-1 text-center mt-3">${val['text']}</p>
@@ -52,8 +52,8 @@ function display(){
                 </div>
             `
 
-            document.getElementById("haiku-body").innerHTML += haikuCard;
+                document.getElementById("haiku-body").innerHTML += haikuCard;
+            })
         })
-    })
-    .catch(console.error);
+        .catch(console.error);
 }
