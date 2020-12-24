@@ -207,7 +207,7 @@ def haiku_favorite():
             with open('haiku.json', 'w') as f:
                 json.dump(haiku_list, f, indent=4, ensure_ascii=False)
 
-            return jsonify({"message": "Success"})
+            return jsonify({"message": "Error"})
 
     return jsonify({"message": "Error"})
 

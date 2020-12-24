@@ -12,14 +12,14 @@ document.getElementById("send").addEventListener('click', (e) => {
     };
     fetch("./haiku", { method, headers, body })
                         .then((res) => res.json())
-                        .then(() => { 
+                        .then((res) => { 
                             display();
                             const d1 = document.getElementById("error-alert");
                             if (res["message"] == "Error") {
-                                d1.style.display = "error";
-                            }
-                            if (res["message"] == "Success") {
-                                window.location.href = "display";
+                                d1.style.display = "block";
+
+                            }if (res["message"] == "Success") {
+                                display();
                             }
                          }).catch(console.error);
 });
