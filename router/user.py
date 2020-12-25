@@ -1,9 +1,11 @@
 from flask import request, render_template, jsonify, make_response, abort, Blueprint
 from datetime import datetime
+from module.function import getUserId
 import json
 import uuid
 
 app = Blueprint('user', __name__)
+
 
 # アカウント認証
 @app.route('/user/login', methods=["POST"])
@@ -89,6 +91,9 @@ def session():
 # アカウント情報の取得
 @app.route('/user/<user_id>', methods=["POST", "GET"])
 def account_info(user_id):
+    session_id = request.cookies.get('session_id', None)
+    session_user_id = getUserId(session_id)
+
     # JSON読み込み
     with open('user.json') as f:
         user_data = json.load(f)
@@ -110,9 +115,16 @@ def account_info(user_id):
             if user_id == user_list[i].get('user_id'):
                 user = user_list[i]
 
+        session_user = {}
+        for i in range(len(user_list)):
+            if session_user_id == user_list[i].get('user_id'):
+                session_user = user_list[i]
+
         haiku = []
         for i in range(len(haiku_list)):
             if user.get('user_id') == haiku_list[i].get('user_id'):
+                if not session_user_id is None:
+                    haiku_list[i]['liked'] = "True" if haiku_list[i]['id'] in session_user['favorite'] else "False"
                 haiku.append(haiku_list[i])
 
         if user == {}:
