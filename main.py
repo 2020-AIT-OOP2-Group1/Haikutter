@@ -9,6 +9,8 @@ app.register_blueprint(haiku.app)
 app.register_blueprint(user.app)
 
 # http://127.0.0.1:5000/
+
+
 @app.route('/')
 def index():
     session_id = request.cookies.get('session_id', None)

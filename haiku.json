@@ -19,5 +19,33 @@
         "text": "古池や　蛙飛びこむ　水の音",
         "user_id": "admin1",
         "favorite": 93
+    },
+    {
+        "id": "5F57nB0ISjW2fUmMqasoWs4xJkuA9ryM",
+        "date": "2020-12-25 16:55:03",
+        "text": "テストテキスト",
+        "user_id": "admin",
+        "favorite": 0
+    },
+    {
+        "id": "yc0LaR6vInlVtPsWMVkIpvXljkMbwiee",
+        "date": "2020-12-25 16:55:04",
+        "text": "テストテキスト",
+        "user_id": "admin",
+        "favorite": 0
+    },
+    {
+        "id": "ZV2cAZb7pUgXsiwTHlP4ytUaDLs6hZSH",
+        "date": "2020-12-25 16:58:20",
+        "text": "テストテキスト",
+        "user_id": "admin",
+        "favorite": 0
+    },
+    {
+        "id": "utn4HaMbGV8yW6fLYsItig6x0uSnWlar",
+        "date": "2020-12-25 16:58:21",
+        "text": "テストテキスト",
+        "user_id": "admin",
+        "favorite": 0
     }
 ]
