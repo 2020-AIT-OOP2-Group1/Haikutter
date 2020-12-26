@@ -106,7 +106,7 @@ def account_info(user_id):
     if request.method == 'GET':
         for i in range(len(user_list)):
             if user_id == user_list[i].get('user_id'):
-                return render_template('user.html')
+                return render_template('user.html', user_id=user_id)
         abort(404, description="Page Not Found")
 
     if request.method == 'POST':
