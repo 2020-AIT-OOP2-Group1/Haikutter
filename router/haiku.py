@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint
 from datetime import datetime
 import json
 from module.function import getUserId, rand_str
+
 app = Blueprint('haiku', __name__)
 
 
@@ -138,3 +139,32 @@ def haiku_favorite():
             return jsonify({"message": "Success"})
 
     return jsonify({"message": "Error"})
+
+
+@app.route('/haiku/delete', methods=["POST"])
+def haiku_delete():
+    id = request.json.get('id', None)
+    session_id = request.cookies.get('session_id', None)
+    user_id = getUserId(session_id)
+    flag = False
+
+    if user_id is None:
+        return jsonify({"message": "Error"})
+
+    with open('haiku.json') as f:
+        haiku_data = json.load(f)
+    haiku_list = list(haiku_data)
+    tmp_list = list(haiku_data)
+
+    for i in range(len(haiku_list)):
+        if id == haiku_list[i]['id'] and user_id == haiku_list[i]['user_id']:
+            flag = True
+            tmp_list.remove(haiku_list[i])
+
+    with open('haiku.json', 'w') as f:
+        json.dump(tmp_list, f, indent=4, ensure_ascii=False)
+
+    if not flag:
+        return jsonify({"message": "Error"})
+
+    return jsonify({"message": "Success"})

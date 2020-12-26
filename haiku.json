@@ -7,17 +7,17 @@
         "favorite": 107
     },
     {
-        "id": "SX9z0XUwr3YxzW20jOavnFD9PcGnLVfS",
-        "date": "2020-12-17 17:18:05",
-        "text": "柿くへば　鐘が鳴るなり　法隆寺",
-        "user_id": "admin",
-        "favorite": 93
-    },
-    {
         "id": "bpTcBc57dSLLxC6zUFIew3gThDuEJK6m",
         "date": "2020-12-17 12:11:13",
         "text": "古池や　蛙飛びこむ　水の音",
         "user_id": "admin1",
+        "favorite": 93
+    },
+    {
+        "id": "SX9z0XUwr3YxzW20jOavnFD9PcGnLVfS",
+        "date": "2020-12-17 17:18:05",
+        "text": "柿くへば　鐘が鳴るなり　法隆寺",
+        "user_id": "admin",
         "favorite": 93
     }
 ]
