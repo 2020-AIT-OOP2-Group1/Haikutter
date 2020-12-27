@@ -74,16 +74,19 @@ def user_logout():
 @app.route('/user/session', methods=["POST"])
 def session():
     cookie = request.cookies.get('session_id', None)
+    user_id = getUserId(cookie)
 
-    # JSON読み込み
-    with open('session.json') as f:
-        session_data = json.load(f)
-    session_list = list(session_data)
-
-    for i in range(len(session_list)):
-        if session_list[i].get('session_id') == cookie:
-            # 成功なら成功を返す
-            return jsonify({"message": "Success"})
+    if not user_id is None:
+        with open('user.json') as f:
+            user_data = json.load(f)
+        user_list = list(user_data)
+        for i in user_list:
+            if i['user_id'] == user_id:
+                return jsonify({
+                    "user_id": i['user_id'],
+                    "name": i['name'],
+                    "image": i['image']
+                })
 
     return jsonify({"message": "Error"})
 
