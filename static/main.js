@@ -73,7 +73,7 @@ function display() {
                     `
                 <div class="card shadow-sm mb-3">
                     <div class="card-body">
-                        <p class="fs-2 lh-1 text-center mt-3">${val['text']}</p>
+                        <p class="fs-2 lh-1 text-center mt-3" style="font-family: 'Noto Serif JP', serif;">${val['text']}</p>
                         <div class="text-end">
                             <div class="row align-items-center d-flex justify-content-between">
                                 <div class="col-auto align-self-end">
@@ -92,10 +92,27 @@ function display() {
                         </div>
                     </div>
                 </div>
-            `
+            `;
 
                 document.getElementById("haiku-body").innerHTML += haikuCard;
             })
         })
         .catch(console.error);
+
+    const method = "post";
+    const body = JSON.stringify({});
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    fetch("./user/session", { method, headers, body })
+        .then((res) => res.json())
+        .then((res) => {
+            const obj = document.getElementById("navbarDropdown");
+            const htmlObj = `
+                <img src="/${res['image']}" style="object-fit: cover; width: 2rem; height: 2rem;" class="border rounded-circle mb-1">
+                ${res['name']}
+            `;
+            obj.innerHTML = htmlObj;
+        })
 }
