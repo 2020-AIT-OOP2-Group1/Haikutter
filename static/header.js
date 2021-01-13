@@ -37,8 +37,8 @@ fetch("http://127.0.0.1:5000/user/session", { method, headers, body })
             htmlObj =
                 `
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <div class="d-flex justify-content-end">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <div class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <div class="d-flex justify-content-end">
                                 <div class="dropdown">
                                     <a class="nav-link dropdown-toggle" type="button" id="navbarDropdown" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
@@ -46,10 +46,11 @@ fetch("http://127.0.0.1:5000/user/session", { method, headers, body })
                                         ${res['name']}
                                     </a>
                                     <div class="list-right dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="/user/${res['user_id']}">MyPage</a>
                                         <a class="dropdown-item" href="#exampleModal" data-bs-toggle="modal">Logout</a>
                                     </div>
                                 </div>
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 `;

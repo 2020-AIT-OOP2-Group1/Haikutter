@@ -11,6 +11,17 @@ function favorite(val) {
     fetch("../haiku/favorite", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
 }
 
+function del_haiku(val) {
+    const obj = { "id": val };
+    const method = "post";
+    const body = JSON.stringify(obj);
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    fetch("../haiku/delete", { method, headers, body }).then((res) => res.json()).then(() => { display(); }).catch(console.error);
+}
+
 function display() {
     const obj = {};
     const method = "post";
@@ -42,10 +53,30 @@ function display() {
                             </button>
                         `
                 }
-                const haikuCard =
-                    `
+                let deleteButton = "";
+                const obj = {};
+                const method = "post";
+                const body = JSON.stringify(obj);
+                const headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                };
+                fetch("../user/session", { method, headers, body }).then((res2) => res2.json()).then((res3) => {
+                    if (location.pathname == "/user/" + res3['user_id']) {
+                        deleteButton =
+                            `
+                                <div class="d-flex flex-row-reverse">
+                                    <button type="button" class="btn btn-secondary mb-3" onclick="del_haiku('${val['id']}')">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            `
+                    }
+                    const haikuCard =
+                        `
                         <div class="card shadow-sm mb-3">
                             <div class="card-body">
+                                ${deleteButton}
                                 <p class="fs-2 lh-1 text-center mt-3" style="font-family: 'Noto Serif JP', serif;">${val['text']}</p>
                                 <div class="text-end">
                                     <div class="row align-items-center d-flex justify-content-between">
@@ -64,7 +95,8 @@ function display() {
                             </div>
                         </div>
                     `
-                document.getElementById("haiku-body").innerHTML += haikuCard;
+                    document.getElementById("haiku-body").innerHTML += haikuCard;
+                }).catch(console.error);
             })
         })
 }
