@@ -3,26 +3,27 @@
         "user_id": "admin",
         "password": "password",
         "name": "松尾芭蕉",
-        "image": "static/image/test.jpg",
+        "image": "static/image/user.png",
         "favorite": [
             "ls2dxXqQLMCWCKOuVgdXHaaZzEKaWcik",
-            "1GrGkRzcd5AujF7ipB9eZAm9TZCb984r",
             "KfMt2NU8VoYDfjPuDbeken1soikpnAxZ",
-            "SX9z0XUwr3YxzW20jOavnFD9PcGnLVfS"
+            "SX9z0XUwr3YxzW20jOavnFD9PcGnLVfS",
+            "1GrGkRzcd5AujF7ipB9eZAm9TZCb984r",
+            "bpTcBc57dSLLxC6zUFIew3gThDuEJK6m"
         ]
     },
     {
         "user_id": "admin1",
         "password": "password1",
         "name": "正岡子規",
-        "image": "static/image/test.jpg",
+        "image": "static/image/user1.png",
         "favorite": []
     },
     {
         "user_id": "admin2",
         "password": "password2",
-        "name": "松尾芭蕉",
-        "image": "static/image/test.jpg",
+        "name": "小林一茶",
+        "image": "static/image/user2.png",
         "favorite": []
     }
 ]
